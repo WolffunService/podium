@@ -39,9 +39,15 @@ func (app *App) noAuthMiddleware(ctx context.Context, req interface{}, info *grp
 }
 
 func (app *App) basicAuthMiddleware(ctx context.Context) (context.Context, error) {
-	isSecureGetRequest := !app.Config.GetBool("notsecure.get.request")
+	onlySecureHTTPRequest := !app.Config.GetBool("only.secure.http")
+	notSecureGetRequest := app.Config.GetBool("notsecure.get.request")
 	method := metautils.ExtractIncoming(ctx).Get("req.method")
-	if !isSecureGetRequest && method == "get" {
+
+	if onlySecureHTTPRequest && method == "" {
+		return ctx, nil
+	}
+
+	if notSecureGetRequest && method == "get" {
 		return ctx, nil
 	}
 

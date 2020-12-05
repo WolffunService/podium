@@ -21,6 +21,7 @@ Other than that, there are a couple more configurations you can pass using envir
 * `PODIUM_BASICAUTH_USERNAME` - If you specify this key, Podium will be configured to use basic auth with this user;
 * `PODIUM_BASICAUTH_PASSWORD` - If you specify `BASICAUTH_USERNAME`, Podium will be configured to use basic auth with this password.
 * `PODIUM_NOTSECURE_GET_REQUEST` - If you specify `BASICAUTH_USERNAME` and specify this variables with `true`, podium will ignore use auth for http `GET` request
+* `PODIUM_ONLY_SECURE_HTTP` - If you specify this variables with `true`, podium will just use auth for http request
 * `PODIUM_EXTENSIONS_DOGSTATSD_HOST` - If you have a [statsd datadog daemon](https://docs.datadoghq.com/developers/dogstatsd/), Podium will publish metrics to the given host at a certain port. Ex. localhost:8125
 ]* `PODIUM_EXTENSIONS_DOGSTATSD_RATE` - If you have a [statsd daemon](https://docs.datadoghq.com/developers/dogstatsd/), Podium will export metrics to the deamon at the given rate
 * `PODIUM_EXTENSIONS_DOGSTATSD_TAGS_PREFIX` - If you have a [statsd daemon](https://docs.datadoghq.com/developers/dogstatsd/), you may set a prefix to every tag sent to the daemon
