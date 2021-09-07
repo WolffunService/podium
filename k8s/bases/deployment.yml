@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podium
+spec:
+  selector:
+    matchLabels:
+      app: podium
+  template:
+    metadata:
+      labels:
+        app: podium
+    spec:
+      containers:
+      - name: podium
+        image: gcr.io/PROJECT_ID/IMAGE:TAG
