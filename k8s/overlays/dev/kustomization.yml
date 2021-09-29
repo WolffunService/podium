@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+- ../../bases
+patches:
+- replica_count.yaml
+- env_map.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Service
+    name: podium
+  patch: |-
+    - op: remove
+      path: /spec/loadBalancerIP
+    - op: remove
+      path: /metadata/annotations
+    - op: replace
+      path: /spec/type
+      value: ClusterIP
