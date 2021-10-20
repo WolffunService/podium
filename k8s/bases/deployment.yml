@@ -14,3 +14,7 @@ spec:
       containers:
       - name: podium
         image: gcr.io/PROJECT_ID/IMAGE:TAG
+        resources:
+          requests:
+            cpu: 10m
+            memory: 128Mi
