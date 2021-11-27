@@ -33,7 +33,7 @@ jobs:
     - uses: google-github-actions/setup-gcloud@master
       with:
         version: '290.0.1'
-        service_account_key: ${{ secrets.GKE_SA_KEY_PRODUCTION }}
+        service_account_key: ${{ secrets.GKE_SA_KEY_THETAN_PRODUCTION }}
         project_id: ${{ env.PROJECT_ID }}
 
     - run: |-
