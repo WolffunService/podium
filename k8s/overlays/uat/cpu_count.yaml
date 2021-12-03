@@ -9,5 +9,5 @@ spec:
       - name: podium
         resources:
           requests:
-            cpu: 300m
-            memory: 512Mi
+            cpu: 50m
+            memory: 128Mi
