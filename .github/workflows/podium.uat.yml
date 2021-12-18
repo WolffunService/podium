@@ -8,9 +8,9 @@ on:
         required: true
 
 env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT_UAT }}
+  PROJECT_ID: thetan-uat
   GKE_CLUSTER: thetan-uat
-  GKE_ZONE: asia-southeast1-a
+  GKE_REGION: asia-southeast1
   DEPLOYMENT_NAME: podium
   IMAGE: podium
 
@@ -33,7 +33,7 @@ jobs:
       with:
         version: '290.0.1'
         service_account_key: ${{ secrets.GKE_SA_KEY_UAT }}
-        project_id: ${{ secrets.GKE_PROJECT_UAT }}
+        project_id: ${{ env.PROJECT_ID }}
 
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
@@ -41,7 +41,7 @@ jobs:
         gcloud --quiet auth configure-docker
     # Get the GKE credentials so we can deploy to the cluster
     - run: |-
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
     # Build the Docker image
     # - name: Generate ccy.json configuration file setting
     #   run: cp ccy.json.bk ./src/ccy.json
@@ -68,5 +68,3 @@ jobs:
         cd ./k8s/overlays/uat
         ../../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
         ../../../kustomize build . | kubectl apply -f -
-        kubectl rollout status deployment/$DEPLOYMENT_NAME
-        kubectl get services -o wide
