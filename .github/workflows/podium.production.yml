@@ -11,6 +11,8 @@ env:
   PROJECT_ID: thetan-arena
   GKE_CLUSTER: thetan-production
   GKE_REGION: asia-southeast1
+  WORKLOAD_IDENTITY_PROVIDER: projects/543249830504/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+  SERVICE_ACCOUNT: githubaction@thetan-arena.iam.gserviceaccount.com
   DEPLOYMENT_NAME: podium
   IMAGE: podium
   KUSTOMIZE_VERSION: 4.4.0
@@ -19,6 +21,9 @@ jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
     - name: Checkout
@@ -29,12 +34,14 @@ jobs:
     - name: Build
       run: ./custom_build.sh
 
-    # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v0
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
       with:
-        version: '290.0.1'
-        service_account_key: ${{ secrets.GKE_SA_KEY_THETAN_PRODUCTION }}
-        project_id: ${{ env.PROJECT_ID }}
+        workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ env.SERVICE_ACCOUNT }}
+
+    - uses: google-github-actions/setup-gcloud@v0
 
     - run: |-
         gcloud --quiet auth configure-docker
