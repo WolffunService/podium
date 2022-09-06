@@ -1,0 +1,66 @@
+name: Build & Push Image
+
+on:
+  workflow_call:
+    inputs:
+      project_id:
+        required: true
+        type: string
+      service_account_email:
+        required: true
+        type: string
+      workload_identity_provider:
+        required: true
+        type: string
+      image_name:
+        required: true
+        type: string
+      build_args:
+        type: string
+        default: ""
+        required: false
+      ar_repository_name:
+        required: false
+        default: thetan-arena
+        type: string
+      ar_url:
+        required: false
+        default: asia-southeast1-docker.pkg.dev
+        type: string
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: source
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ inputs.workload_identity_provider }}
+          service_account: ${{ inputs.service_account_email }}
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v0"
+      - name: "Configure Docker credentials"
+        run: |-
+          gcloud auth configure-docker ${{ inputs.ar_url }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./source
+          push: true
+          tags: ${{ env.IMAGE_FULL_NAME }}:${{ github.sha }}
+          build-args: ${{ inputs.build_args }}
+        env:
+          IMAGE_FULL_NAME: ${{ inputs.ar_url }}/${{ inputs.project_id }}/${{ inputs.ar_repository_name }}/${{ inputs.image_name }}
