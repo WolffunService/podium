@@ -5,8 +5,7 @@ on:
     secrets:
       access_token:
         description: Access token to pull sub-modules
-        required: false
-        default: ${{ github.token }}
+        required: true
     inputs:
       project_id:
         required: true
@@ -40,7 +39,7 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - name: Checkout
+      - name: Checkout using custom token
         uses: actions/checkout@v3
         with:
           path: source

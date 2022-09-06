@@ -17,6 +17,8 @@ jobs:
       service_account_email: github-actions@thetan-rival.iam.gserviceaccount.com
       workload_identity_provider: projects/417983751839/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
       image_name: podium
+    secrets:
+      access_token: ${{ secrets.GITHUB_TOKEN }}
   update-image-tag:
     needs:
       - build-and-push
