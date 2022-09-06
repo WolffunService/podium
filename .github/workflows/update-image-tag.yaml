@@ -1,0 +1,51 @@
+name: Update image tag
+
+on:
+  workflow_call:
+    secrets:
+      access_token:
+        required: true
+    inputs:
+      config_repo_url:
+        type: string
+        required: true
+      config_values_file:
+        type: string
+        required: true
+      image_tag_key:
+        type: string
+        required: true
+      image_tag:
+        type: string
+        required: true
+      project_id:
+        required: true
+        type: string
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout config repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.config_repo_url }}
+          token: ${{ secrets.access_token }}
+          ref: main
+          path: config-repo
+      - name: update new tag
+        run: |
+          yq -ei "$IMAGE_TAG_KEY |= strenv(IMAGE_TAG)" "${VALUE_FILE}"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Update '${PROJECT_NAME}' wf-admin image tag to ${IMAGE_TAG}"
+          git push origin main
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          VALUE_FILE: ${{ inputs.config_values_file }}
+          PROJECT_NAME: ${{ inputs.project_id }}
+          IMAGE_TAG_KEY: ${{ inputs.image_tag_key }}
+        working-directory: config-repo
