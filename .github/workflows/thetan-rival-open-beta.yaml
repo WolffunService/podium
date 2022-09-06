@@ -29,5 +29,6 @@ jobs:
       image_tag_key: ".image.tag"
       image_tag: ${{ github.sha }}
       project_id: thetan-rival
+      image_name: podium
     secrets:
       access_token: ${{ secrets.IMAGE_TAG_UPDATE_WORKFLOW_GH_TOKEN }}
