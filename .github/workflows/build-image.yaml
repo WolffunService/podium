@@ -6,6 +6,7 @@ on:
       access_token:
         description: Access token to pull sub-modules
         required: false
+        default: ${{ github.token }}
     inputs:
       project_id:
         required: true
