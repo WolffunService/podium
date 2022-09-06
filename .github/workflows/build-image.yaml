@@ -2,6 +2,10 @@ name: Build & Push Image
 
 on:
   workflow_call:
+    secrets:
+      access_token:
+        description: Access token to pull sub-modules
+        required: false
     inputs:
       project_id:
         required: true
@@ -39,6 +43,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: source
+          submodules: true
+          token: ${{ secrets.access_token }}
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
