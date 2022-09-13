@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/update-image-tag.yaml
     with:
       config_repo_url: WolffunGame/thetan-rival-config
-      config_values_file: helm-values/open-beta/services/podium.yaml
+      config_values_file: helm-values/open-beta/podium.yaml
       image_tag_key: ".image.tag"
       image_tag: ${{ github.sha }}
       project_id: thetan-rival
