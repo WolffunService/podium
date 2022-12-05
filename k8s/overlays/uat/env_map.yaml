@@ -9,6 +9,6 @@ spec:
       - name: podium
         env:
           - name : PODIUM_REDIS_HOST
-            value: 'cache.infrastructure.svc.cluster.local'
+            value: 'redis-cache-master.infrastructure.svc.cluster.local'
           - name : PODIUM_REDIS_PORT
             value: '6379'
