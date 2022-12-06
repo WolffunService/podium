@@ -11,6 +11,8 @@ env:
   serviceAccount: github@thetan-staging.iam.gserviceaccount.com
   arUrl: asia-southeast1-docker.pkg.dev
   commitAuthorEmail: quan@wolffungame.com
+  cfgRepoUrl: WolffunGame/thetan-arena-config
+  cfgValuesFile: helm-values/staging/podium.yaml
 
 jobs:
   build-push-update-tag:
@@ -44,8 +46,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           context: ./source
           push: true
-          cfgRepoUrl: WolffunGame/thetan-arena-config
-          cfgValuesFile: helm-values/staging/podium.yaml
+          cfgRepoUrl: ${{ env.cfgRepoUrl }}
+          cfgValuesFile: ${{ env.cfgValuesFile }}
           commitAuthorEmail: ${{ env.commitAuthorEmail }}
           imageTagKey: ".image.tag"
           accessToken: ${{ secrets.IMAGE_TAG_UPDATE_WORKFLOW_GH_TOKEN }}
