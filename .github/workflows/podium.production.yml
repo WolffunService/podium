@@ -10,7 +10,7 @@ on:
 env:
   PROJECT_ID: thetan-arena
   GKE_CLUSTER: thetan-production
-  GKE_REGION: asia-southeast1
+  GKE_LOCATION: asia-southeast1
   WORKLOAD_IDENTITY_PROVIDER: projects/543249830504/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
   SERVICE_ACCOUNT: githubaction@thetan-arena.iam.gserviceaccount.com
   DEPLOYMENT_NAME: podium
@@ -46,8 +46,11 @@ jobs:
     - run: |-
         gcloud --quiet auth configure-docker
 
-    - run: |-
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
+    - id: 'get-credentials'
+      uses: 'google-github-actions/get-gke-credentials@v1'
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_LOCATION }}
 
     - name: Build
       run: |-

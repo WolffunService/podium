@@ -10,7 +10,7 @@ on:
 env:
   PROJECT_ID: thetan-uat
   GKE_CLUSTER: thetan-uat
-  GKE_REGION: asia-southeast1
+  GKE_LOCATION: asia-southeast1
   DEPLOYMENT_NAME: podium
   IMAGE: podium
 
@@ -40,11 +40,11 @@ jobs:
     - run: |-
         gcloud --quiet auth configure-docker
     # Get the GKE credentials so we can deploy to the cluster
-    - run: |-
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
-    # Build the Docker image
-    # - name: Generate ccy.json configuration file setting
-    #   run: cp ccy.json.bk ./src/ccy.json
+    - id: 'get-credentials'
+      uses: 'google-github-actions/get-gke-credentials@v1'
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_LOCATION }}
 
     - name: Build
       run: |-
