@@ -29,9 +29,8 @@ jobs:
       run: ./custom_build.sh
 
     # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v0
+    - uses: google-github-actions/setup-gcloud@v1
       with:
-        version: '290.0.1'
         service_account_key: ${{ secrets.GKE_SA_KEY_UAT }}
         project_id: ${{ env.PROJECT_ID }}
 
