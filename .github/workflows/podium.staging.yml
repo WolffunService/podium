@@ -10,7 +10,7 @@ env:
   workloadIdentityProvider: projects/911077854090/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
   serviceAccount: github@thetan-staging.iam.gserviceaccount.com
   arUrl: asia-southeast1-docker.pkg.dev
-  commitAuthorEmail: quan@wolffungame.com
+  commitAuthorEmail: quan@WolffunService.com
 
 jobs:
   build-push-update-tag:
@@ -44,7 +44,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           context: ./source
           push: true
-          cfgRepoUrl: WolffunGame/thetan-arena-config
+          cfgRepoUrl: WolffunService/thetan-arena-config
           cfgValuesFile: helm-values/staging/podium.yaml
           commitAuthorEmail: ${{ env.commitAuthorEmail }}
           imageTagKey: ".image.tag"
