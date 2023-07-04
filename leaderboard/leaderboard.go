@@ -97,7 +97,9 @@ func getSetScoreScript(operation string) *redis.Script {
 			score_ttl = "inf"
 		end
 		for i,mem in ipairs(members) do
-			table.insert(key_pairs, tonumber(mem["score"]))
+			local t = redis.call('TIME')
+			local frag = 2147483647 - tonumber(t[1])
+			table.insert(key_pairs, tonumber(mem["score"]..'.'..frag))
 			table.insert(key_pairs, mem["publicID"])
 			if (ARGV[3] == "1") then
 				mem["previousRank"] = tonumber(redis.call("ZREVRANK", KEYS[1], mem["publicID"])) or -2
