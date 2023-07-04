@@ -1,0 +1,33 @@
+name: podium staging
+
+on:
+  workflow_dispatch: {}
+  push:
+
+permissions:
+  contents: "read"
+  id-token: "write"
+  actions: "read"
+
+jobs:
+  gitops-deploy:
+    concurrency:
+      group: thetan-arena-staging-${{ github.ref }}
+      cancel-in-progress: true
+    uses: WolffunService/actions/.github/workflows/feature-preview-self-hosted.yaml@refs/heads/main
+    with:
+      gcpProjectID: thetan-staging
+      imageName: podium
+      workloadIdentityProvider: projects/911077854090/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+      serviceAccount: github@thetan-staging.iam.gserviceaccount.com
+      infraWorkloadIdentityProvider: projects/652830095753/locations/global/workloadIdentityPools/wolffun-infra-github-actions/providers/github-oidc
+      infraServiceAccount: github-actions@wolffun-infra.iam.gserviceaccount.com
+      githubAppID: "251922"
+      githubAppPrivateKeySecretManagerKey: wolffun-infra/github-app-wolffun-infra-private-key
+      cfgRepository: WolffunService/thetan-arena-config
+      cfgValuesFile: helm-values/staging/podium.yaml
+      slackBotTokenSecretManagerKey: projects/wolffun-infra/secrets/devops-notification-bot-token
+      channelIDs: staging-alerts
+      submodules: true
+      githubReadOnlyAppID: "275724"
+      githubReadOnlyAppPrivateKeySecretManagerKey: projects/wolffun-infra/secrets/github-app-wolffun-infra-readonly-private-key
