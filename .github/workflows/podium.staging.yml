@@ -2,12 +2,10 @@ name: podium staging
 
 on:
   workflow_dispatch: {}
-  push:
 
 permissions:
   contents: "read"
   id-token: "write"
-  actions: "read"
 
 jobs:
   gitops-deploy:
