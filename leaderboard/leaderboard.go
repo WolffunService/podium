@@ -28,7 +28,7 @@ import (
 	tfgredis "github.com/topfreegames/extensions/redis"
 )
 
-//MemberNotFoundError indicates member was not found in Redis
+// MemberNotFoundError indicates member was not found in Redis
 type MemberNotFoundError struct {
 	LeaderboardID string
 	MemberID      string
@@ -38,7 +38,7 @@ func (e *MemberNotFoundError) Error() string {
 	return fmt.Sprintf("Could not find data for member %s in leaderboard %s.", e.MemberID, e.LeaderboardID)
 }
 
-//NewMemberNotFound returns a new error for member not found
+// NewMemberNotFound returns a new error for member not found
 func NewMemberNotFound(leaderboardID, memberID string) *MemberNotFoundError {
 	return &MemberNotFoundError{
 		LeaderboardID: leaderboardID,
@@ -55,7 +55,7 @@ type Member struct {
 	ExpireAt     int    `json:"expireAt"`
 }
 
-//Members are a list of member
+// Members are a list of member
 type Members []*Member
 
 func (slice Members) Len() int {
@@ -148,7 +148,7 @@ func getSetScoreScript(operation string) *redis.Script {
 	`, operation, operation))
 }
 
-//getMembersByRange for a given leaderboard
+// getMembersByRange for a given leaderboard
 func getMembersByRange(redisClient interfaces.RedisClient, leaderboard string, startOffset int, endOffset int, order string) ([]*Member, error) {
 	cli := redisClient
 
@@ -173,7 +173,7 @@ func getMembersByRange(redisClient interfaces.RedisClient, leaderboard string, s
 	return members, nil
 }
 
-//GetMembersByRange for a given leaderboard
+// GetMembersByRange for a given leaderboard
 func (c *Client) GetMembersByRange(ctx context.Context, leaderboard string, startOffset int, endOffset int, order string) ([]*Member, error) {
 	return getMembersByRange(c.redisWithTracing(ctx), leaderboard, startOffset, endOffset, order)
 }
@@ -216,7 +216,7 @@ func NewClient(host string, port int, password string, db int, connectionTimeout
 	return &Client{redisClient: cli}, nil
 }
 
-//NewClientWithRedis creates a leaderboard using an already connected tfg Redis
+// NewClientWithRedis creates a leaderboard using an already connected tfg Redis
 func NewClientWithRedis(cli *tfgredis.Client) *Client {
 	return &Client{redisClient: cli}
 }
@@ -381,9 +381,9 @@ func (c *Client) getMember(r interfaces.RedisClient, leaderboardID string, membe
 	}
 
 	rank := int(res[0].(int64))
-	score, _ := strconv.ParseInt(res[1].(string), 10, 64)
+	score, _ := strconv.ParseFloat(res[1].(string), 64)
 
-	nMember := Member{PublicID: memberID, Score: score, Rank: rank + 1}
+	nMember := Member{PublicID: memberID, Score: int64(score), Rank: rank + 1}
 	if includeTTL {
 		if expireAtStr, ok := res[2].(string); ok {
 			expireAtParsed, _ := strconv.ParseInt(expireAtStr, 10, 32)
@@ -520,7 +520,7 @@ func (c *Client) GetAroundMe(ctx context.Context, leaderboardID string, pageSize
 
 // GetAroundScore returns a page of results centered in the score provided
 func (c *Client) GetAroundScore(ctx context.Context, leaderboardID string, pageSize int, score int64, order string) ([]*Member, error) {
-	//getMembersByRange(c.RedisClient, c.PublicID, startOffset, endOffset, order, l)
+	// getMembersByRange(c.RedisClient, c.PublicID, startOffset, endOffset, order, l)
 	redisClient := c.redisWithTracing(ctx)
 	memberID, err := getMemberIDWithClosestScore(redisClient, leaderboardID, score)
 	if err != nil {
@@ -571,7 +571,7 @@ func (c *Client) GetLeaders(ctx context.Context, leaderboardID string, pageSize,
 	return getMembersByRange(redisClient, leaderboardID, startOffset, endOffset, order)
 }
 
-//GetTopPercentage of members in the leaderboard.
+// GetTopPercentage of members in the leaderboard.
 func (c *Client) GetTopPercentage(ctx context.Context, leaderboardID string, pageSize, amount, maxMembers int, order string) ([]*Member, error) {
 	if amount < 1 || amount > 100 {
 		return nil, fmt.Errorf("Percentage must be a valid integer between 1 and 100.")
