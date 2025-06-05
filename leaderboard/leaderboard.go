@@ -449,10 +449,10 @@ func (c *Client) GetMembers(ctx context.Context, leaderboardID string, memberIDs
 		}
 
 		rank := int(res[i+1].(int64)) + 1
-		score, _ := strconv.ParseInt(res[i+2].(string), 10, 64)
+		score, _ := strconv.ParseFloat(res[i+2].(string), 64)
 		member := &Member{
 			PublicID: memberPublicID,
-			Score:    score,
+			Score:    int64(score),
 			Rank:     rank,
 		}
 		if includeTTL {
@@ -633,11 +633,11 @@ func (c *Client) GetTopPercentage(ctx context.Context, leaderboardID string, pag
 		memberPublicID := res[i].(string)
 
 		rank := int(res[i+1].(int64)) + 1
-		score, _ := strconv.ParseInt(res[i+2].(string), 10, 64)
+		score, _ := strconv.ParseFloat(res[i+2].(string), 64)
 
 		members = append(members, &Member{
 			PublicID: memberPublicID,
-			Score:    score,
+			Score:    int64(score),
 			Rank:     rank,
 		})
 	}
